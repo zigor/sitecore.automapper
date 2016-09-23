@@ -1,4 +1,5 @@
 ﻿using Sitecore.AutoMapper.Extensions;
+using Sitecore.Diagnostics;
 using Sitecore.Mvc.Pipelines.Response.GetModel;
 using Sitecore.Mvc.Presentation;
 
@@ -14,9 +15,13 @@ namespace Sitecore.AutoMapper.Mvc.Pipelines.GetModel
       {
         return;
       }
-
+      HighResTimer timer = new HighResTimer(true);
 
       args.Rendering.Item.Project(args.Result);
+
+      var elapsed = timer.ElapsedTimeSpan.Milliseconds;
+      Log.Info("elapsed:" + elapsed, this);
+      timer.Stop();
     }
   }
 }

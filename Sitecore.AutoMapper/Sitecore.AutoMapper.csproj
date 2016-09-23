@@ -55,7 +55,7 @@
     <Compile Include="Mappers\CustomItemMapper.cs" />
     <Compile Include="Mappers\FieldCollectionMapper.cs" />
     <Compile Include="Mappers\FieldMapper.cs" />
-    <Compile Include="Mappers\ItemMapper.cs" />
+    <Compile Include="Mappers\BaseItemMapper.cs" />
     <Compile Include="Profiles\ItemProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

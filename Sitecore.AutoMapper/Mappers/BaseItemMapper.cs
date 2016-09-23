@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
-using AutoMapper.Execution;
 using Sitecore.Data.Items;
 
 namespace Sitecore.AutoMapper.Mappers
@@ -12,13 +10,13 @@ namespace Sitecore.AutoMapper.Mappers
   ///   Item mapper
   /// </summary>
   /// <seealso cref="IObjectMapper" />
-  public class ItemMapper : IObjectMapper
+  public class BaseItemMapper : IObjectMapper
   {
     /// <summary>
     ///   The map method information
     /// </summary>
     private static readonly MethodInfo MapMethodInfo =
-      typeof(ItemMapper).GetRuntimeMethods().First(_ => _.IsStatic);
+      typeof(BaseItemMapper).GetRuntimeMethods().First(_ => _.IsStatic);
 
     /// <summary>
     ///   When true, the mapping engine will use this mapper as the strategy
@@ -29,7 +27,7 @@ namespace Sitecore.AutoMapper.Mappers
     /// </returns>
     public bool IsMatch(TypePair context)
     {
-      return typeof(Item).IsAssignableFrom(context.SourceType);
+      return typeof(BaseItem).IsAssignableFrom(context.SourceType);
     }
 
     /// <summary>
@@ -59,13 +57,24 @@ namespace Sitecore.AutoMapper.Mappers
     /// <param name="destination">The destination.</param>
     /// <param name="context">The context.</param>
     /// <returns></returns>
-    internal static TDestination Map<TDestination>(Item source, TDestination destination, ResolutionContext context)
+    internal static TDestination Map<TDestination>(BaseItem source, TDestination destination, ResolutionContext context)
     {
-      destination = destination == null ? context.Mapper.CreateObject<TDestination>() : destination;
+      var map = context.Mapper.ConfigurationProvider.FindTypeMapFor(source.GetType(), destination.GetType());
+
+      if (map == null)
+      {
+        var config = new MapperConfiguration(cfg =>
+        {
+          cfg.CreateMap(source.GetType(), destination.GetType());
+        });
+
+        config.CreateMapper().Map(source, destination, source.GetType(), destination.GetType());
+      }
+
       var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
 
       context.Mapper.Map(source.Fields, destination, source.Fields.GetType(), destTypeDetails.Type);
-      
+
       return destination;
     }
   }

@@ -28,12 +28,12 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     {
       Assert.ArgumentNotNull(configNode, nameof(configNode));
 
-      if (string.IsNullOrEmpty(configNode.Value))
+      if (string.IsNullOrEmpty(configNode.InnerText))
       {
         Log.Warn("Model type was not found for the specified config node" + Environment.NewLine + configNode.OuterXml, this);
       }
 
-      var type = Type.GetType(configNode.Value, false);
+      var type = Type.GetType(configNode.InnerText, false);
 
       if (type == null)
       {
@@ -49,18 +49,27 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     /// <param name="args">The arguments.</param>
     public void Process(PipelineArgs args)
     {
-      Mapper.Initialize(mce => MapperRegistry.Mappers.Add(new FieldMapper()));
-      Mapper.Initialize(mce => MapperRegistry.Mappers.Add(new FieldCollectionMapper()));
-      Mapper.Initialize(mce => MapperRegistry.Mappers.Add(new ItemMapper()));
-      Mapper.Initialize(mce => MapperRegistry.Mappers.Add(new CustomItemMapper()));
+      Mapper.Initialize(this.Configure);
+    }
+
+    /// <summary>
+    /// Configures the specified mce.
+    /// </summary>
+    /// <param name="mce">The mce.</param>
+    private void Configure(IMapperConfigurationExpression mce)
+    {
+      MapperRegistry.Mappers.Add(new FieldMapper());
+      MapperRegistry.Mappers.Add(new FieldCollectionMapper());
+      MapperRegistry.Mappers.Add(new BaseItemMapper());
+      MapperRegistry.Mappers.Add(new CustomItemMapper());
 
       foreach (var type in this.modelTypes)
       {
         var profile = Activator.CreateInstance(typeof(ItemProfile<>).MakeGenericType(type)) as Profile;
-        Mapper.Initialize(mce => mce.AddProfile(profile));
+      //  mce.AddProfile(profile);
       }
 
-      Mapper.Initialize(mce => mce.AddProfile(new ItemProfile<object>()));
+      mce.AddProfile(new ItemProfile<object>());
     }
   }
 }

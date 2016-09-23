@@ -15,11 +15,18 @@ namespace Sitecore.AutoMapper.Profiles
     /// </summary>
     public ItemProfile()
     {
-      this.CreateMap<Item, T>()
-        .BeforeMap((i, t) => Mapper.Map(i.Fields, t));
+      this.CreateMap<Item, T>();
 
       this.CreateMap<CustomItem, T>()
         .BeforeMap((i, t) => Mapper.Map(i.InnerItem, t));
     }
+
+    /// <summary>
+    /// Gets the name of the profile.
+    /// </summary>
+    /// <value>
+    /// The name of the profile.
+    /// </value>
+    public override string ProfileName => this.GetType().FullName;
   }
 }
