@@ -4,7 +4,10 @@ using System.Xml;
 using AutoMapper;
 using AutoMapper.Mappers;
 using Sitecore.AutoMapper.Mappers;
+using Sitecore.AutoMapper.Mappers.Fields;
+using Sitecore.AutoMapper.Mappers.Primitives;
 using Sitecore.AutoMapper.Profiles;
+using Sitecore.Data.Fields;
 using Sitecore.Diagnostics;
 using Sitecore.Pipelines;
 
@@ -58,6 +61,11 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     /// <param name="mce">The mce.</param>
     private void Configure(IMapperConfigurationExpression mce)
     {
+      MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
+      
+      MapperRegistry.Mappers.Add(new ReferenceFieldMapper());
+      MapperRegistry.Mappers.Add(new LookupFieldMapper());
+      MapperRegistry.Mappers.Add(new CustomFieldMapper<CustomField>());
       MapperRegistry.Mappers.Add(new FieldMapper());
       MapperRegistry.Mappers.Add(new FieldCollectionMapper());
       MapperRegistry.Mappers.Add(new BaseItemMapper());

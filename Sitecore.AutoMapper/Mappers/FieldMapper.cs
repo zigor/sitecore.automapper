@@ -60,15 +60,10 @@ namespace Sitecore.AutoMapper.Mappers
     /// <param name="context">The context.</param>
     /// <returns></returns>
     internal static TDestination Map<TDestination>(Field field, TDestination destination, ResolutionContext context)
-    {
-      destination = destination == null ? context.Mapper.CreateObject<TDestination>() : destination;
-      
-      var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
-      var member = destTypeDetails.PublicWriteAccessors.FirstOrDefault(m => m.Name == field.Name);
+    {     
+      var customField = FieldTypeManager.GetField(field);
 
-      var value = context.MapMember(member, field.Value, destination);
-
-      member.SetMemberValue(destination, value);
+      context.Mapper.Map(customField, destination, customField.GetType(), destination.GetType());
 
       return destination;
     }

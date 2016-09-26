@@ -56,6 +56,10 @@
     <Compile Include="Mappers\FieldCollectionMapper.cs" />
     <Compile Include="Mappers\FieldMapper.cs" />
     <Compile Include="Mappers\BaseItemMapper.cs" />
+    <Compile Include="Mappers\Fields\CustomFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\LookupFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\ReferenceFieldMapper.cs" />
+    <Compile Include="Mappers\Primitives\ItemToStringMapper.cs" />
     <Compile Include="Profiles\ItemProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

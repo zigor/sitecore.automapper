@@ -59,6 +59,12 @@ namespace Sitecore.AutoMapper.Mappers
     /// <returns></returns>
     internal static TDestination Map<TDestination>(BaseItem source, TDestination destination, ResolutionContext context)
     {
+      if (source == null)
+      {
+        return default(TDestination);
+      }
+
+      destination = destination == null ? context.Mapper.CreateObject<TDestination>() : destination;
       var map = context.Mapper.ConfigurationProvider.FindTypeMapFor(source.GetType(), destination.GetType());
 
       if (map == null)

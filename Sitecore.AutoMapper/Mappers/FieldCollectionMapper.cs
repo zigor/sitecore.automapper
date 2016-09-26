@@ -2,7 +2,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
-using AutoMapper.Execution;
 using Sitecore.Collections;
 
 namespace Sitecore.AutoMapper.Mappers
