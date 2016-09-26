@@ -62,7 +62,8 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     private void Configure(IMapperConfigurationExpression mce)
     {
       MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
-      
+
+      MapperRegistry.Mappers.Add(new DateTimeFieldMapper());
       MapperRegistry.Mappers.Add(new ReferenceFieldMapper());
       MapperRegistry.Mappers.Add(new LookupFieldMapper());
       MapperRegistry.Mappers.Add(new CustomFieldMapper<CustomField>());
