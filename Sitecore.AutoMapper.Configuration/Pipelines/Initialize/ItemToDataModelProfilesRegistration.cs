@@ -61,9 +61,8 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     /// <param name="mce">The mce.</param>
     private void Configure(IMapperConfigurationExpression mce)
     {
-      MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
-
       MapperRegistry.Mappers.Add(new NameValueListFieldMapper());
+      MapperRegistry.Mappers.Add(new LinkFieldMapper());
       MapperRegistry.Mappers.Add(new ImageFieldMapper());
       MapperRegistry.Mappers.Add(new CheckboxFieldMapper());
       MapperRegistry.Mappers.Add(new DateTimeFieldMapper());

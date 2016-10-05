@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using Sitecore.Data.Items;
+using Sitecore.AutoMapper.Data;
 
 namespace Sitecore.AutoMapper.Mappers.Primitives
 {
   /// <summary>
-  ///   Item to string mapper
+  /// LinkDetails to string mapper
   /// </summary>
-  /// <seealso cref="AutoMapper.ObjectMapper{Sitecore.Data.Items.Item, System.String}" />
-  internal class ItemToStringMapper : ObjectMapper<Item, string>
+  /// <seealso cref="ObjectMapper{TSource,TDestination}.AutoMapper.Data.LinkDetails, System.String}" />
+  internal class LinkDetailsToStringMapper : ObjectMapper<LinkDetails, string>
   {
     /// <summary>
     ///   When true, the mapping engine will use this mapper as the strategy
@@ -18,7 +18,7 @@ namespace Sitecore.AutoMapper.Mappers.Primitives
     /// </returns>
     public override bool IsMatch(TypePair context)
     {
-      return typeof(Item).IsAssignableFrom(context.SourceType) && (context.DestinationType == typeof(string));
+      return typeof(LinkDetails).IsAssignableFrom(context.SourceType) && (context.DestinationType == typeof(string));
     }
 
     /// <summary>
@@ -28,9 +28,9 @@ namespace Sitecore.AutoMapper.Mappers.Primitives
     /// <param name="destination">The destination.</param>
     /// <param name="context">The context.</param>
     /// <returns></returns>
-    public override string Map(Item source, string destination, ResolutionContext context)
+    public override string Map(LinkDetails source, string destination, ResolutionContext context)
     {
-      return source?.DisplayName;
+      return source?.Url ?? source?.Script;
     }
   }
 }

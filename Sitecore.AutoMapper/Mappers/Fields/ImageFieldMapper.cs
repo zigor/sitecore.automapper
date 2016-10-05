@@ -13,6 +13,9 @@ namespace Sitecore.AutoMapper.Mappers.Fields
   /// <seealso cref="ImageField" />
   public class ImageFieldMapper : CustomFieldMapper<ImageField>
   {
+    /// <summary>
+    /// Initializes the <see cref="ImageFieldMapper"/> class.
+    /// </summary>
     static ImageFieldMapper()
     {
       MapperRegistry.Mappers.Insert(0, new ImageDetailsToStringMapper());

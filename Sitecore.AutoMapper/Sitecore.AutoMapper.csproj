@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ImageDetails.cs" />
+    <Compile Include="Data\LinkDetails.cs" />
     <Compile Include="Extensions\MapperConfigurationExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Mappers\CustomItemMapper.cs" />
@@ -66,13 +67,16 @@
     <Compile Include="Mappers\Fields\CustomFieldMapper.cs" />
     <Compile Include="Mappers\Fields\DateTimeFieldMapper.cs" />
     <Compile Include="Mappers\Fields\ImageFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\LinkFieldMapper.cs" />
     <Compile Include="Mappers\Fields\LookupFieldMapper.cs" />
     <Compile Include="Mappers\Fields\MultilistFieldMapper.cs" />
     <Compile Include="Mappers\Fields\NameValueListFieldMapper.cs" />
     <Compile Include="Mappers\Fields\ReferenceFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\WordDocumentFieldMapper.cs" />
     <Compile Include="Mappers\ObjectMapper.cs" />
     <Compile Include="Mappers\Primitives\ImageDetailsToStringMapper.cs" />
     <Compile Include="Mappers\Primitives\ItemToStringMapper.cs" />
+    <Compile Include="Mappers\Primitives\LinkDetailsToStringMapper.cs" />
     <Compile Include="Profiles\ItemProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

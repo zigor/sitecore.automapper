@@ -2,6 +2,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
+using AutoMapper.Mappers;
+using Sitecore.AutoMapper.Mappers.Primitives;
 using Sitecore.Data.Items;
 
 namespace Sitecore.AutoMapper.Mappers
@@ -12,6 +14,11 @@ namespace Sitecore.AutoMapper.Mappers
   /// <seealso cref="IObjectMapper" />
   public class BaseItemMapper : ObjectMapper
   {
+    static BaseItemMapper()
+    {
+      MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
+    }
+
     /// <summary>
     ///   The map method information
     /// </summary>
