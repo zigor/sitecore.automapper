@@ -4,15 +4,17 @@ using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
 using AutoMapper.Execution;
+using Sitecore.AutoMapper.Extensions;
 using Sitecore.Data.Fields;
 
 namespace Sitecore.AutoMapper.Mappers.Fields
 {
   /// <summary>
-  /// Custom field object mapper
+  ///   Custom field object mapper
   /// </summary>
+  /// <typeparam name="TSource">The type of the source.</typeparam>
   /// <seealso cref="IObjectMapper" />
-  public class CustomFieldMapper<TSource> : IObjectMapper where TSource : CustomField
+  public class CustomFieldMapper<TSource> : ObjectMapper where TSource : CustomField
   {
     /// <summary>
     ///   The map method information
@@ -21,20 +23,20 @@ namespace Sitecore.AutoMapper.Mappers.Fields
       typeof(CustomFieldMapper<TSource>).GetRuntimeMethods().FirstOrDefault(mi => mi.Name == "Map");
 
     /// <summary>
-    /// When true, the mapping engine will use this mapper as the strategy
+    ///   When true, the mapping engine will use this mapper as the strategy
     /// </summary>
     /// <param name="context">Resolution context</param>
     /// <returns>
-    /// Is match
+    ///   Is match
     /// </returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public virtual bool IsMatch(TypePair context)
+    public override bool IsMatch(TypePair context)
     {
       return typeof(TSource).IsAssignableFrom(context.SourceType);
     }
 
     /// <summary>
-    /// Builds a mapping expression equivalent to the base Map method
+    ///   Builds a mapping expression equivalent to the base Map method
     /// </summary>
     /// <param name="typeMapRegistry"></param>
     /// <param name="configurationProvider"></param>
@@ -43,17 +45,19 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     /// <param name="destExpression">Destination parameter</param>
     /// <param name="contextExpression">ResulotionContext parameter</param>
     /// <returns>
-    /// Map expression
+    ///   Map expression
     /// </returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public virtual Expression MapExpression(TypeMapRegistry typeMapRegistry, IConfigurationProvider configurationProvider,
+    public override Expression MapExpression(TypeMapRegistry typeMapRegistry,
+      IConfigurationProvider configurationProvider,
       PropertyMap propertyMap, Expression sourceExpression, Expression destExpression, Expression contextExpression)
     {
-        return Expression.Call(Expression.Constant(this), MapMethod.MakeGenericMethod(destExpression.Type), sourceExpression, destExpression, contextExpression);
+      return Expression.Call(Expression.Constant(this), MapMethod.MakeGenericMethod(destExpression.Type),
+        sourceExpression, destExpression, contextExpression);
     }
 
-    /// <summary>  
-    /// Maps the specified source.
+    /// <summary>
+    ///   Maps the specified source.
     /// </summary>
     /// <typeparam name="TDestination">The type of the destination.</typeparam>
     /// <param name="field">The field.</param>
@@ -65,8 +69,8 @@ namespace Sitecore.AutoMapper.Mappers.Fields
       return SetMemberValue(field.InnerField.Name, field.Value, destination, context);
     }
 
-    /// <summary>
-    /// Sets the member value.
+    /// <summary>  
+    ///   Sets the member value.
     /// </summary>
     /// <typeparam name="TDestination">The type of the destination.</typeparam>
     /// <param name="name">The name.</param>
@@ -74,12 +78,11 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     /// <param name="destination">The destination.</param>
     /// <param name="context">The context.</param>
     /// <returns></returns>
-    public static TDestination SetMemberValue<TDestination>(string name, object value, TDestination destination, ResolutionContext context)
+    public static TDestination SetMemberValue<TDestination>(string name, object value, TDestination destination,
+      ResolutionContext context)
     {
-      destination = destination == null ? context.Mapper.CreateObject<TDestination>() : destination;
+      var member = GetPropertyMember(name, destination, context);
 
-      var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
-      var member = destTypeDetails.PublicWriteAccessors.FirstOrDefault(m => m.Name == name);
       if (member == null)
       {
         return destination;
@@ -87,11 +90,29 @@ namespace Sitecore.AutoMapper.Mappers.Fields
 
       var memberType = member.GetMemberType();
 
-      var destinationValue = context.Mapper.Map(value, value?.GetType() ?? memberType, memberType);
+      var mapper = GetMapper(value?.GetType() ?? memberType, memberType, context);
+
+      var destinationValue = mapper.Map(value, value?.GetType() ?? memberType, memberType);
 
       member.SetMemberValue(destination, destinationValue);
 
       return destination;
+    }
+
+    /// <summary>
+    ///   Gets the property member.
+    /// </summary>
+    /// <typeparam name="TDestination">The type of the destination.</typeparam>
+    /// <param name="name">The name.</param>
+    /// <param name="destination">The destination.</param>
+    /// <param name="context">The context.</param>
+    /// <returns></returns>
+    private static MemberInfo GetPropertyMember<TDestination>(string name, TDestination destination,
+      ResolutionContext context)
+    {
+      var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
+
+      return destTypeDetails.PublicWriteAccessors.FirstOrDefault(m => m.Name == name);
     }
   }
 }

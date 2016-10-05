@@ -10,7 +10,7 @@ namespace Sitecore.AutoMapper.Mappers
   ///   Item mapper
   /// </summary>
   /// <seealso cref="IObjectMapper" />
-  public class BaseItemMapper : IObjectMapper
+  public class BaseItemMapper : ObjectMapper
   {
     /// <summary>
     ///   The map method information
@@ -25,7 +25,7 @@ namespace Sitecore.AutoMapper.Mappers
     /// <returns>
     ///   Is match
     /// </returns>
-    public bool IsMatch(TypePair context)
+    public override bool IsMatch(TypePair context)
     {
       return typeof(BaseItem).IsAssignableFrom(context.SourceType);
     }
@@ -43,7 +43,7 @@ namespace Sitecore.AutoMapper.Mappers
     ///   Map expression
     /// </returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Expression MapExpression(TypeMapRegistry typeMapRegistry, IConfigurationProvider configurationProvider,
+    public override Expression MapExpression(TypeMapRegistry typeMapRegistry, IConfigurationProvider configurationProvider,
       PropertyMap propertyMap, Expression sourceExpression, Expression destExpression, Expression contextExpression)
     {
       return Expression.Call(null, MapMethodInfo.MakeGenericMethod(destExpression.Type), sourceExpression, destExpression, contextExpression);
@@ -65,23 +65,40 @@ namespace Sitecore.AutoMapper.Mappers
       }
 
       destination = destination == null ? context.Mapper.CreateObject<TDestination>() : destination;
-      var map = context.Mapper.ConfigurationProvider.FindTypeMapFor(source.GetType(), destination.GetType());
 
-      if (map == null)
-      {
-        var config = new MapperConfiguration(cfg =>
-        {
-          cfg.CreateMap(source.GetType(), destination.GetType());
-        });
+      MapSourceProperties(source, destination, context);
 
-        config.CreateMapper().Map(source, destination, source.GetType(), destination.GetType());
-      }
+      MapSourceFields(source, destination, context);
 
+      return destination;
+    }
+
+    /// <summary>
+    /// Maps the source fields.
+    /// </summary>
+    /// <typeparam name="TDestination">The type of the destination.</typeparam>
+    /// <param name="source">The source.</param>
+    /// <param name="destination">The destination.</param>
+    /// <param name="context">The context.</param>
+    private static void MapSourceFields<TDestination>(BaseItem source, TDestination destination, ResolutionContext context)
+    {
       var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
 
       context.Mapper.Map(source.Fields, destination, source.Fields.GetType(), destTypeDetails.Type);
+    }
 
-      return destination;
+    /// <summary>
+    /// Maps the source properties.
+    /// </summary>
+    /// <typeparam name="TDestination">The type of the destination.</typeparam>  
+    /// <param name="source">The source.</param>
+    /// <param name="destination">The destination.</param>
+    /// <param name="context">The context.</param>
+    private static void MapSourceProperties<TDestination>(BaseItem source, TDestination destination,
+      ResolutionContext context)
+    {
+      var mapper = GetMapper(source.GetType(), destination.GetType(), context, false);
+      mapper.Map(source, destination, source.GetType(), destination.GetType());
     }
   }
 }

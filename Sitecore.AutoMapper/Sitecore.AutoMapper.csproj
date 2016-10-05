@@ -41,6 +41,10 @@
       <HintPath>..\packages\Sitecore.Kernel.NoReferences.8.2.160729\lib\NET452\Sitecore.Kernel.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sitecore.Mvc.NoReferences.8.2.160729\lib\NET452\Sitecore.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,16 +55,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ImageDetails.cs" />
+    <Compile Include="Extensions\MapperConfigurationExtensions.cs" />
     <Compile Include="Extensions\MappingExtensions.cs" />
     <Compile Include="Mappers\CustomItemMapper.cs" />
     <Compile Include="Mappers\FieldCollectionMapper.cs" />
     <Compile Include="Mappers\FieldMapper.cs" />
     <Compile Include="Mappers\BaseItemMapper.cs" />
+    <Compile Include="Mappers\Fields\CheckboxFieldMapper.cs" />
     <Compile Include="Mappers\Fields\CustomFieldMapper.cs" />
     <Compile Include="Mappers\Fields\DateTimeFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\ImageFieldMapper.cs" />
     <Compile Include="Mappers\Fields\LookupFieldMapper.cs" />
     <Compile Include="Mappers\Fields\MultilistFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\NameValueListFieldMapper.cs" />
     <Compile Include="Mappers\Fields\ReferenceFieldMapper.cs" />
+    <Compile Include="Mappers\ObjectMapper.cs" />
+    <Compile Include="Mappers\Primitives\ImageDetailsToStringMapper.cs" />
     <Compile Include="Mappers\Primitives\ItemToStringMapper.cs" />
     <Compile Include="Profiles\ItemProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

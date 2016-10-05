@@ -63,6 +63,9 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     {
       MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
 
+      MapperRegistry.Mappers.Add(new NameValueListFieldMapper());
+      MapperRegistry.Mappers.Add(new ImageFieldMapper());
+      MapperRegistry.Mappers.Add(new CheckboxFieldMapper());
       MapperRegistry.Mappers.Add(new DateTimeFieldMapper());
       MapperRegistry.Mappers.Add(new ReferenceFieldMapper());
       MapperRegistry.Mappers.Add(new MultilistFieldMapper());
