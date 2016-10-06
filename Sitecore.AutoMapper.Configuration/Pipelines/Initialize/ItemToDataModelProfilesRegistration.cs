@@ -52,14 +52,13 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
     /// <param name="args">The arguments.</param>
     public void Process(PipelineArgs args)
     {
-      Mapper.Initialize(this.Configure);
+      this.Configure();
     }
 
     /// <summary>
     /// Configures the specified mce.
     /// </summary>
-    /// <param name="mce">The mce.</param>
-    private void Configure(IMapperConfigurationExpression mce)
+    private void Configure()
     {
       MapperRegistry.Mappers.Add(new NameValueListFieldMapper());
       MapperRegistry.Mappers.Add(new LinkFieldMapper());
@@ -74,14 +73,6 @@ namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
       MapperRegistry.Mappers.Add(new FieldCollectionMapper());
       MapperRegistry.Mappers.Add(new BaseItemMapper());
       MapperRegistry.Mappers.Add(new CustomItemMapper());
-
-      foreach (var type in this.modelTypes)
-      {
-        var profile = Activator.CreateInstance(typeof(ItemProfile<>).MakeGenericType(type)) as Profile;
-      //  mce.AddProfile(profile);
-      }
-
-      mce.AddProfile(new ItemProfile<object>());
     }
   }
 }
