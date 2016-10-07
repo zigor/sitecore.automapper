@@ -1,12 +1,11 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Mappers;
 using Sitecore.AutoMapper.Mappers;
 using Sitecore.AutoMapper.Mappers.Fields;
 using Sitecore.Data.Fields;
 using Sitecore.Pipelines;
 
-namespace Sitecore.AutoMapper.Configuration.Pipelines.Initialize
+namespace Sitecore.AutoMapper.Pipelines.Initialize
 {
   /// <summary>
   ///   Items to data models profiles

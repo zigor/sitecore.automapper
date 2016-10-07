@@ -78,13 +78,21 @@
     <Compile Include="Mappers\Primitives\ImageDetailsToStringMapper.cs" />
     <Compile Include="Mappers\Primitives\ItemToStringMapper.cs" />
     <Compile Include="Mappers\Primitives\LinkDetailsToStringMapper.cs" />
+    <Compile Include="Pipelines\GetModel\InitializeAutoMapperModel.cs" />
+    <Compile Include="Pipelines\Initialize\ItemToDataModelProfilesRegistration.cs" />
     <Compile Include="Profiles\ItemProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App_Config\Include\AutoMapper\Sitecore.AutoMapper.Configuration.config" />
+    <None Include="App_Config\Include\AutoMapper\Sitecore.AutoMapper.Mvc.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Mvc\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
