@@ -20,7 +20,7 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     public override TDestination Map<TDestination>(CheckboxField field, TDestination destination,
       ResolutionContext context)
     {
-      return SetMemberValue(field.InnerField.Name, field.Checked, destination, context);
+      return SetMemberValue(field.InnerField, field.Checked, destination, context);
     }
   }
 }

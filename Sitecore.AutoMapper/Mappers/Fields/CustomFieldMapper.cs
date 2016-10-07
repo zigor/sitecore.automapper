@@ -1,118 +1,51 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
-using AutoMapper;
-using AutoMapper.Execution;
-using Sitecore.AutoMapper.Extensions;
 using Sitecore.Data.Fields;
 
 namespace Sitecore.AutoMapper.Mappers.Fields
 {
   /// <summary>
-  ///   Custom field object mapper
+  /// CustomFieldMapper implementation
   /// </summary>
-  /// <typeparam name="TSource">The type of the source.</typeparam>
-  /// <seealso cref="IObjectMapper" />
-  public class CustomFieldMapper<TSource> : ObjectMapper where TSource : CustomField
+  /// <seealso cref="Sitecore.AutoMapper.Mappers.Fields.CustomFieldMapper" />
+  public abstract class CustomFieldMapper : ObjectMapper
   {
     /// <summary>
-    ///   The map method information
+    /// The after maps
     /// </summary>
-    private static readonly MethodInfo MapMethod =
-      typeof(CustomFieldMapper<TSource>).GetRuntimeMethods().FirstOrDefault(mi => mi.Name == "Map");
+    private static readonly List<Action<CustomField, object, MemberInfo>> afterMaps = new List<Action<CustomField, object, MemberInfo>>();
 
     /// <summary>
-    ///   When true, the mapping engine will use this mapper as the strategy
+    /// Afters the map.
     /// </summary>
-    /// <param name="context">Resolution context</param>
-    /// <returns>
-    ///   Is match
-    /// </returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    public override bool IsMatch(TypePair context)
+    /// <param name="afterMapFunction">The after map.</param>
+    public static void AddAfterMap(Action<CustomField, object, MemberInfo> afterMapFunction)
     {
-      return typeof(TSource).IsAssignableFrom(context.SourceType);
+      afterMaps.Add(afterMapFunction);
     }
 
     /// <summary>
-    ///   Builds a mapping expression equivalent to the base Map method
+    /// Runs the after map.
     /// </summary>
-    /// <param name="typeMapRegistry"></param>
-    /// <param name="configurationProvider"></param>
-    /// <param name="propertyMap"></param>
-    /// <param name="sourceExpression">Source parameter</param>
-    /// <param name="destExpression">Destination parameter</param>
-    /// <param name="contextExpression">ResulotionContext parameter</param>
-    /// <returns>
-    ///   Map expression
-    /// </returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    public override Expression MapExpression(TypeMapRegistry typeMapRegistry,
-      IConfigurationProvider configurationProvider,
-      PropertyMap propertyMap, Expression sourceExpression, Expression destExpression, Expression contextExpression)
-    {
-      return Expression.Call(Expression.Constant(this), MapMethod.MakeGenericMethod(destExpression.Type),
-        sourceExpression, destExpression, contextExpression);
-    }
-
-    /// <summary>
-    ///   Maps the specified source.
-    /// </summary>
-    /// <typeparam name="TDestination">The type of the destination.</typeparam>
     /// <param name="field">The field.</param>
     /// <param name="destination">The destination.</param>
-    /// <param name="context">The context.</param>
-    /// <returns></returns>
-    public virtual TDestination Map<TDestination>(TSource field, TDestination destination, ResolutionContext context)
+    /// <param name="memberInfo">The member information.</param>
+    internal static void RunAfterMap(CustomField field, object destination, MemberInfo memberInfo)
     {
-      return SetMemberValue(field.InnerField.Name, field.Value, destination, context);
-    }
-
-    /// <summary>  
-    ///   Sets the member value.
-    /// </summary>
-    /// <typeparam name="TDestination">The type of the destination.</typeparam>
-    /// <param name="name">The name.</param>
-    /// <param name="value">The value.</param>
-    /// <param name="destination">The destination.</param>
-    /// <param name="context">The context.</param>
-    /// <returns></returns>
-    public static TDestination SetMemberValue<TDestination>(string name, object value, TDestination destination,
-      ResolutionContext context)
-    {
-      var member = GetPropertyMember(name, destination, context);
-
-      if (member == null)
+      foreach (var action in GetAfterMaps())
       {
-        return destination;
+        action(field, destination, memberInfo);
       }
-
-      var memberType = member.GetMemberType();
-
-      var mapper = GetMapper(value?.GetType() ?? memberType, memberType, context);
-
-      var destinationValue = mapper.Map(value, value?.GetType() ?? memberType, memberType);
-
-      member.SetMemberValue(destination, destinationValue);
-
-      return destination;
     }
 
     /// <summary>
-    ///   Gets the property member.
+    /// Gets the after maps.
     /// </summary>
-    /// <typeparam name="TDestination">The type of the destination.</typeparam>
-    /// <param name="name">The name.</param>
-    /// <param name="destination">The destination.</param>
-    /// <param name="context">The context.</param>
     /// <returns></returns>
-    private static MemberInfo GetPropertyMember<TDestination>(string name, TDestination destination,
-      ResolutionContext context)
+    public static IEnumerable<Action<CustomField, object, MemberInfo>> GetAfterMaps()
     {
-      var destTypeDetails = context.ConfigurationProvider.Configuration.CreateTypeDetails(destination.GetType());
-
-      return destTypeDetails.PublicWriteAccessors.FirstOrDefault(m => m.Name == name);
+      return afterMaps;
     }
   }
 }

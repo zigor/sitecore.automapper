@@ -65,6 +65,7 @@
     <Compile Include="Mappers\BaseItemMapper.cs" />
     <Compile Include="Mappers\Fields\CheckboxFieldMapper.cs" />
     <Compile Include="Mappers\Fields\CustomFieldMapper.cs" />
+    <Compile Include="Mappers\Fields\CustomFieldMapper_TSource.cs" />
     <Compile Include="Mappers\Fields\DateTimeFieldMapper.cs" />
     <Compile Include="Mappers\Fields\ImageFieldMapper.cs" />
     <Compile Include="Mappers\Fields\LinkFieldMapper.cs" />

@@ -44,7 +44,7 @@ namespace Sitecore.AutoMapper.Mappers.Fields
         return destination;
       }
 
-      return SetMemberValue(field.InnerField.Name, imageDetails, destination, context);
+      return SetMemberValue(field.InnerField, imageDetails, destination, context);
     }
 
     /// <summary>

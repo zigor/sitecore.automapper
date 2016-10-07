@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using AutoMapper;
@@ -14,6 +16,14 @@ namespace Sitecore.AutoMapper.Mappers
   /// <seealso cref="IObjectMapper" />
   public class BaseItemMapper : ObjectMapper
   {
+    /// <summary>
+    /// The after maps
+    /// </summary>
+    private static readonly List<Action<BaseItem, object>> afterMaps = new List<Action<BaseItem, object>>();
+
+    /// <summary>
+    /// Initializes the <see cref="BaseItemMapper"/> class.
+    /// </summary>
     static BaseItemMapper()
     {
       MapperRegistry.Mappers.Insert(0, new ItemToStringMapper());
@@ -23,7 +33,7 @@ namespace Sitecore.AutoMapper.Mappers
     ///   The map method information
     /// </summary>
     private static readonly MethodInfo MapMethodInfo =
-      typeof(BaseItemMapper).GetRuntimeMethods().First(_ => _.IsStatic);
+      typeof(BaseItemMapper).GetRuntimeMethods().First(_ => _.Name == "Map");
 
     /// <summary>
     ///   When true, the mapping engine will use this mapper as the strategy
@@ -57,6 +67,15 @@ namespace Sitecore.AutoMapper.Mappers
     }
 
     /// <summary>
+    /// Afters the map.
+    /// </summary>
+    /// <param name="afterMapFunction">The after map.</param>
+    public static void AddAfterMap(Action<BaseItem, object> afterMapFunction)
+    {
+      afterMaps.Add(afterMapFunction);
+    }
+
+    /// <summary>
     ///   Maps the specified source.
     /// </summary>
     /// <typeparam name="TDestination">The type of the destination.</typeparam>
@@ -76,6 +95,9 @@ namespace Sitecore.AutoMapper.Mappers
       MapSourceProperties(source, destination, context);
 
       MapSourceFields(source, destination, context);
+
+
+      afterMaps.ForEach(a => a(source, destination));
 
       return destination;
     }

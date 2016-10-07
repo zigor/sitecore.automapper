@@ -19,7 +19,7 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     /// <returns></returns>
     public override TDestination Map<TDestination>(DateField field, TDestination destination, ResolutionContext context)
     {
-      return SetMemberValue(field.InnerField.Name, field.DateTime, destination, context);
+      return SetMemberValue(field.InnerField, field.DateTime, destination, context);
     }
   }
 }

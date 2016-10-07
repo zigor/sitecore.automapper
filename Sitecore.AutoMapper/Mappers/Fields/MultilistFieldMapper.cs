@@ -19,7 +19,7 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     /// <returns></returns>
     public override TDestination Map<TDestination>(MultilistField field, TDestination destination, ResolutionContext context)
     {
-      return SetMemberValue(field.InnerField.Name, field.GetItems(), destination, context);
+      return SetMemberValue(field.InnerField, field.GetItems(), destination, context);
     }
   }
 }

@@ -30,11 +30,6 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     /// <returns></returns>
     public override TDestination Map<TDestination>(LinkField field, TDestination destination, ResolutionContext context)
     {
-      if (string.IsNullOrEmpty(field.InnerField.Value))
-      {
-        return destination;
-      }
-
       var renderer = new LinkRendrer(field);
       var linkDetails = renderer.MapToLinkDetails();
 
@@ -43,7 +38,7 @@ namespace Sitecore.AutoMapper.Mappers.Fields
         return destination;
       }
 
-      return SetMemberValue(field.InnerField.Name, linkDetails, destination, context);
+      return SetMemberValue(field.InnerField, linkDetails, destination, context);
     }
 
     /// <summary>
@@ -52,17 +47,11 @@ namespace Sitecore.AutoMapper.Mappers.Fields
     private class LinkRendrer : Xml.Xsl.LinkRenderer
     {
       /// <summary>
-      /// The field
-      /// </summary>
-      private LinkField field;
-
-      /// <summary>
       /// Initializes a new instance of the <see cref="LinkRendrer"/> class.
       /// </summary>
       /// <param name="field">The field.</param>
       public LinkRendrer(LinkField field) : base(field.InnerField.Item)
       {
-        this.field = field;
         this.FieldName = field.InnerField.Name;
         this.FieldValue = field.InnerField.Value;
       }
@@ -74,16 +63,11 @@ namespace Sitecore.AutoMapper.Mappers.Fields
       /// <exception cref="System.NotImplementedException"></exception>
       public LinkDetails MapToLinkDetails()
       {
-        if (string.IsNullOrEmpty(this.FieldValue))
-        {
-          return null;
-        }
-
         var url = this.GetUrl(this.LinkField);
 
         if (string.IsNullOrEmpty(url))
         {
-          return null;
+          url = string.Empty;
         }
 
         return new LinkDetails
